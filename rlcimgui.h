@@ -19,6 +19,7 @@
 extern "C" {
 #endif
 
+#define igGetIO igGetIO_Nil
 // High level API. This API is designed in the style of raylib and meant to work with reaylib code.
 // It will manage it's own ImGui context and call common ImGui functions (like NewFrame and Render) for you
 // for a lower level API that matches the other ImGui platforms, please see imgui_impl_raylib.h

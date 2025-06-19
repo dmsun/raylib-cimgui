@@ -467,7 +467,7 @@ static void SetupGlobals(void)
 void SetupBackend(void)
 {
     ImGuiIO* io = igGetIO();
-    ImGuiPlatformIO *pio = igGetPlatformIO();
+    ImGuiPlatformIO *pio = igGetPlatformIO_Nil();
 	io->BackendPlatformName = "imgui_impl_raylib";
 
 	io->BackendFlags |= ImGuiBackendFlags_HasMouseCursors | ImGuiBackendFlags_HasGamepad | ImGuiBackendFlags_HasSetMousePos;
@@ -770,7 +770,7 @@ void rligImageRect(const Texture* image, int destWidth, int destHeight, Rectangl
     }
 
     ImVec4 color = {1.0f, 1.0f, 1.0f, 1.0f};
-    igImage((ImTextureID)image, (ImVec2){(float)destWidth, (float)destHeight}, uv0, uv1, color, color);
+    igImage((ImTextureID)image, (ImVec2){(float)destWidth, (float)destHeight}, uv0, uv1);
 }
 
 void rligImageRenderTexture(const RenderTexture* image)
