@@ -23,6 +23,7 @@
 
 #ifndef IMGUI_DISABLE
 #define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
+// #define CIMGUI_USE_VOIDPTR
 #include "cimgui.h"
 
 typedef struct ImDrawData ImDrawData;

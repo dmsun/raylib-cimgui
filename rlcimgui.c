@@ -58,7 +58,7 @@ void ReloadFonts(void)
 	fontTexture = (Texture2D*)MemAlloc(sizeof(Texture2D));
 	*fontTexture = LoadTextureFromImage(image);
 	UnloadImage(image);
-	io->Fonts->TexID = fontTexture;
+	io->Fonts->TexID = (ImTextureID)(uintptr_t)fontTexture;
 }
 
 static const KeyboardKey RaylibKeys[] = {
@@ -298,12 +298,13 @@ static MouseCursor ImGuiCursorToRaylib(ImGuiMouseCursor cursor)
     };
 }
 
-static const char* GetClipTextCallback(void*) 
-{
+const char * GetClipTextCallback(ImGuiContext *ctx) {
+    // likely ignore `ctx` unless needed
+    (void)ctx;  // Avoid unused parameter warning
     return GetClipboardText();
 }
 
-static void SetClipTextCallback(void*, const char* text)
+static void SetClipTextCallback(ImGuiContext *ctx, const char *text)
 {
     SetClipboardText(text);
 }
@@ -466,16 +467,22 @@ static void SetupGlobals(void)
 void SetupBackend(void)
 {
     ImGuiIO* io = igGetIO();
+    ImGuiPlatformIO *pio = igGetPlatformIO();
 	io->BackendPlatformName = "imgui_impl_raylib";
 
 	io->BackendFlags |= ImGuiBackendFlags_HasMouseCursors | ImGuiBackendFlags_HasGamepad | ImGuiBackendFlags_HasSetMousePos;
 
 	io->MousePos = (ImVec2){0, 0};
 
-	io->SetClipboardTextFn = SetClipTextCallback;
-	io->GetClipboardTextFn = GetClipTextCallback;
+	// io->SetClipboardTextFn = SetClipTextCallback;
+	// io->GetClipboardTextFn = GetClipTextCallback;
 
-	io->ClipboardUserData = NULL;
+    pio->Platform_SetClipboardTextFn = SetClipTextCallback;
+	pio->Platform_GetClipboardTextFn = GetClipTextCallback;
+
+	// io->ClipboardUserData = NULL;
+
+    pio->Platform_ClipboardUserData = NULL;
 }
 
 void rligSetupFontAwesome(void)
@@ -629,7 +636,7 @@ void ImGui_ImplRaylib_RenderDrawData(ImDrawData* draw_data)
 				continue;
 			}
 
-			ImGuiRenderTriangles(cmd.ElemCount, cmd.IdxOffset, &commandList->IdxBuffer, &commandList->VtxBuffer, cmd.TextureId);
+            ImGuiRenderTriangles(cmd.ElemCount, cmd.IdxOffset, &commandList->IdxBuffer, &commandList->VtxBuffer, (void *)(uintptr_t)cmd.TextureId);
 			rlDrawRenderBatchActive();
 		}
 	}
